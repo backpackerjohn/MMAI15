@@ -16,6 +16,11 @@ import ThemeSuggestionToast from './components/ThemeSuggestionToast';
 import SuccessToast from './components/SuccessToast';
 import ConfirmationModal from './components/ConfirmationModal';
 import UndoToast from './components/UndoToast';
+import { auth } from './utils/firebase';
+import { User, onAuthStateChanged } from 'firebase/auth';
+import { hasLocalData, migrateLocalToFirestore } from './utils/migration';
+import MigrationModal from './components/MigrationModal';
+
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
@@ -328,6 +333,9 @@ const App: React.FC = () => {
   const [undoAction, setUndoAction] = useState<UndoAction | null>(null);
   const undoTimeoutRef = useRef<number | null>(null);
 
+  const [user, setUser] = useState<User | null>(null);
+  const [migrationStatus, setMigrationStatus] = useState<'idle' | 'migrating' | 'success' | 'error'>('idle');
+
   useEffect(() => { localStorage.setItem('brainDumpItems', JSON.stringify(processedItems)); }, [processedItems]);
   useEffect(() => { localStorage.setItem('brainDumpNotes', JSON.stringify(notes)); }, [notes]);
   useEffect(() => { localStorage.setItem('savedMomentumMaps', JSON.stringify(savedTasks)); }, [savedTasks]);
@@ -359,6 +367,33 @@ const App: React.FC = () => {
     localStorage.setItem('timeLearningSettings', JSON.stringify(timeLearningSettings));
   }, [timeLearningSettings]);
   
+    // Handles Firebase authentication state and triggers the one-time data migration.
+    useEffect(() => {
+        if (!auth) return;
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            setUser(currentUser);
+            if (currentUser) {
+                const MIGRATION_FLAG = 'migrationCompleted_v1';
+                const hasMigrated = localStorage.getItem(MIGRATION_FLAG) === 'true';
+
+                // Check if migration is needed: not already migrated and local data exists.
+                if (!hasMigrated && hasLocalData()) {
+                    setMigrationStatus('migrating');
+                    try {
+                        await migrateLocalToFirestore(currentUser.uid);
+                        localStorage.setItem(MIGRATION_FLAG, 'true');
+                        setMigrationStatus('success');
+                    } catch (error) {
+                        console.error('Migration failed:', error);
+                        setMigrationStatus('error');
+                    }
+                }
+            }
+        });
+        // Cleanup the listener when the component unmounts.
+        return () => unsubscribe();
+    }, []);
+
   // Keyboard Shortcuts
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -559,6 +594,12 @@ const App: React.FC = () => {
         onUndo={handleUndo}
         onDismiss={() => setUndoAction(null)}
       />
+      {migrationStatus !== 'idle' && (
+          <MigrationModal 
+              status={migrationStatus} 
+              onClose={() => setMigrationStatus('idle')} 
+          />
+      )}
     </div>
   );
 };
