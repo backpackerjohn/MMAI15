@@ -260,7 +260,7 @@ const BrainDump: React.FC<BrainDumpProps> = ({
         const note = notes[item.id];
 
         return (
-            <div key={item.id} className={`group relative bg-[var(--color-surface)] p-4 rounded-[var(--border-radius-lg)] shadow-sm border transition-all duration-200 flex items-start space-x-4 ${isSelected ? 'shadow-md border-[var(--color-primary-accent)]' : 'border-[var(--color-border)] hover:shadow-md'}`}>
+            <div key={item.id} className={`group relative bg-[var(--color-surface)] p-4 rounded-[var(--border-radius-lg)] elevation-2 transition-all duration-200 flex items-start space-x-4 ${isSelected ? 'border-[var(--color-primary-accent)]' : ''}`}>
                 <input type="checkbox" checked={isSelected} onChange={() => handleToggleSelect(item.id)} className="mt-1 h-4 w-4 rounded border-gray-300 text-[var(--color-primary-accent)] focus:ring-[var(--color-primary-accent)]" aria-label={`Select item: ${item.item}`}/>
                 <div className="flex-1">
                     <p className="text-[var(--color-text-primary)]">{item.item}</p>
@@ -289,7 +289,7 @@ const BrainDump: React.FC<BrainDumpProps> = ({
                         <input type="text" placeholder="+ Add tag" onKeyDown={(e) => { if (e.key === 'Enter') { const v = e.currentTarget.value.trim(); if (v) { handleAddNewTag(item.id, v); e.currentTarget.value = ''; } } }} className="text-xs px-2 py-1 border border-dashed border-[var(--color-border)] rounded-[var(--border-radius-md)] w-24 focus:w-32 focus:ring-1 focus:ring-[var(--color-primary-accent)] focus:border-[var(--color-primary-accent)] transition-all bg-transparent"/>
                          {(item.timeEstimateMinutesP50 !== undefined && item.timeEstimateMinutesP90 !== undefined) && (
                             <div className="flex items-center space-x-1 text-xs text-[var(--color-text-subtle)] font-medium ml-auto pl-2" title="P50-P90 Time Estimate">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                                 <span>{item.timeEstimateMinutesP50}&ndash;{item.timeEstimateMinutesP90}m</span>
                             </div>
                          )}
@@ -345,7 +345,7 @@ const BrainDump: React.FC<BrainDumpProps> = ({
                 <h1 className="text-4xl font-bold text-[var(--color-text-primary)] mb-2">Brain Dump</h1>
                 <p className="text-[var(--color-text-secondary)] mb-6">Capture your thoughts, ideas, and tasks. The AI will intelligently split, categorize, and organize everything for you.</p>
 
-                <div className="bg-[var(--color-surface)] p-6 rounded-[var(--border-radius-xl)] shadow-lg border border-[var(--color-border)]">
+                <div className="bg-[var(--color-surface)] p-6 rounded-[var(--border-radius-xl)] elevation-2">
                     <textarea value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder="Follow up with John about Q2 budget..." className="w-full h-48 p-4 bg-transparent border border-[var(--color-border-hover)] rounded-[var(--border-radius-md)] focus:ring-2 focus:ring-[var(--color-primary-accent)] transition-shadow resize-none" />
                     <div className="mt-4 flex justify-end">
                         <button onClick={handleProcess} disabled={isLoading} className="px-6 py-3 font-semibold text-[var(--color-primary-accent-text)] bg-[var(--color-primary-accent)] rounded-[var(--border-radius-md)] hover:bg-[var(--color-primary-accent-hover)] transition-all shadow-md disabled:bg-stone-400 flex items-center">
@@ -382,7 +382,7 @@ const BrainDump: React.FC<BrainDumpProps> = ({
                                 !selectedCluster ? (
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
                                         {clusters.map(cluster => (
-                                            <div key={cluster.clusterName} onClick={() => setSelectedCluster(cluster)} className="bg-[var(--color-surface)] p-6 rounded-[var(--border-radius-xl)] shadow-sm border border-[var(--color-border)] cursor-pointer transition-all hover:shadow-xl hover:border-[var(--color-primary-accent)] hover:-translate-y-1">
+                                            <div key={cluster.clusterName} onClick={() => setSelectedCluster(cluster)} className="bg-[var(--color-surface)] p-6 rounded-[var(--border-radius-xl)] elevation-2 cursor-pointer transition-all hover:-translate-y-1 hover:border-[var(--color-primary-accent)]">
                                                 <h3 className="text-xl font-bold text-[var(--color-text-primary)] truncate mb-3">{cluster.clusterName}</h3>
                                                 <div className="border-t my-4 border-[var(--color-border)]"></div>
                                                 <div className="flex justify-between items-center text-[var(--color-text-secondary)]">

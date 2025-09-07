@@ -54,7 +54,7 @@ const BrainDumpModal: React.FC<BrainDumpModalProps> = ({ isOpen, onClose, onSubm
       aria-labelledby="brain-dump-modal-title"
     >
       <div 
-        className="bg-[var(--color-surface)] rounded-[var(--border-radius-xl)] shadow-2xl p-8 w-full max-w-2xl transform transition-all duration-300 scale-100"
+        className="bg-[var(--color-surface)] rounded-[var(--border-radius-xl)] elevation-3 p-8 w-full max-w-2xl transform transition-all duration-300 scale-100"
         onClick={(e) => e.stopPropagation()}
       >
         <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>

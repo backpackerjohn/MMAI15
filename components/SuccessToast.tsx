@@ -30,7 +30,7 @@ const SuccessToast: React.FC<SuccessToastProps> = ({ message, onDismiss }) => {
       role="alert"
       aria-live="assertive"
     >
-      <div className="bg-[var(--color-surface)] rounded-xl shadow-2xl p-4 w-full max-w-md border border-[var(--color-border)] flex items-center gap-3">
+      <div className="bg-[var(--color-surface)] rounded-xl elevation-3 p-4 w-full max-w-md flex items-center gap-3">
         <CheckCircleIcon className="h-6 w-6 text-[var(--color-success)] flex-shrink-0" />
         <p className="text-sm font-semibold text-[var(--color-text-primary)]">{message}</p>
       </div>

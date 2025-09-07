@@ -37,13 +37,13 @@ const UndoToast: React.FC<UndoToastProps> = ({ action, onUndo, onDismiss }) => {
       role="alert"
       aria-live="assertive"
     >
-      <div className="bg-[var(--color-surface)] rounded-xl shadow-2xl p-4 w-full max-w-md border border-[var(--color-border)] flex items-center gap-4">
+      <div className="bg-[var(--color-surface)] rounded-xl elevation-3 p-4 w-full max-w-md flex items-center gap-4">
+        <UndoIcon className="h-6 w-6 text-[var(--color-primary-accent)] flex-shrink-0" />
         <p className="text-sm font-semibold text-[var(--color-text-primary)] flex-1">{action?.message}</p>
         <button
           onClick={handleUndoClick}
-          className="flex items-center gap-2 px-3 py-1.5 text-sm font-bold text-[var(--color-primary-accent)] bg-[var(--color-surface-sunken)] hover:bg-[var(--color-border)] rounded-lg border border-[var(--color-border-hover)]"
+          className="px-3 py-1.5 text-sm font-bold text-[var(--color-primary-accent)] hover:bg-[var(--color-surface-sunken)] rounded-md border border-[var(--color-border)]"
         >
-          <UndoIcon className="h-4 w-4" />
           Undo
         </button>
       </div>

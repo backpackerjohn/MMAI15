@@ -1176,23 +1176,28 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
                         >
                             <h2 className="font-bold text-center text-[var(--color-text-primary)] mb-4">{day}</h2>
                             <div className="space-y-3">
-                                {eventsForDay.map(event => (
+                                {eventsForDay.map(event => {
+                                    const gradientClass = event.contextTags?.includes(ContextTag.Work) ? 'card-gradient-overlay-jade' : 'card-gradient-overlay-clay';
+                                    return (
                                     <div key={event.id}
                                         draggable
                                         onDragStart={(e) => handleDragStart(e, event.id)}
                                         onDragEnd={handleDragEnd}
-                                        className={`p-3 rounded-lg cursor-grab transition-all ${getAnchorColor(event.title)} ${draggedEventId === event.id ? 'opacity-30' : 'opacity-100'}`}
+                                        className={`relative p-3 rounded-lg cursor-grab transition-all ${getAnchorColor(event.title)} ${draggedEventId === event.id ? 'opacity-30' : 'opacity-100'} card-interactive-lift ${gradientClass}`}
                                     >
-                                        <div className="flex justify-between items-start">
-                                            <p className="font-bold text-sm">{event.title}</p>
-                                            <DropdownMenu trigger={<MoreOptionsIcon className="h-4 w-4 cursor-pointer" />}>
-                                                 <button onClick={() => handleDuplicateAnchor(event.id)} className="w-full text-left flex items-center gap-3 px-3 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-surface-sunken)] rounded-md"><DuplicateIcon className="h-4 w-4" /> Duplicate</button>
-                                                 <button onClick={() => handleDeleteAnchor(event.id)} className="w-full text-left flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md"><TrashIcon className="h-4 w-4" /> Delete</button>
-                                            </DropdownMenu>
+                                        <div className="relative z-10">
+                                            <div className="flex justify-between items-start">
+                                                <p className="font-bold text-sm">{event.title}</p>
+                                                <DropdownMenu trigger={<MoreOptionsIcon className="h-4 w-4 cursor-pointer" />}>
+                                                     <button onClick={() => handleDuplicateAnchor(event.id)} className="w-full text-left flex items-center gap-3 px-3 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-surface-sunken)] rounded-md"><DuplicateIcon className="h-4 w-4" /> Duplicate</button>
+                                                     <button onClick={() => handleDeleteAnchor(event.id)} className="w-full text-left flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md"><TrashIcon className="h-4 w-4" /> Delete</button>
+                                                </DropdownMenu>
+                                            </div>
+                                            <p className="text-xs opacity-90 mt-1">{formatTimeForToast(event.startTime)} - {formatTimeForToast(event.endTime)}</p>
                                         </div>
-                                        <p className="text-xs opacity-90 mt-1">{formatTimeForToast(event.startTime)} - {formatTimeForToast(event.endTime)}</p>
                                     </div>
-                                ))}
+                                    )
+                                })}
                             </div>
                         </div>
                     );

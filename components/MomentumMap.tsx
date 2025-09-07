@@ -29,9 +29,51 @@ import { getPersonalizedEstimate, getTimeOfDay } from '../utils/timeAnalytics';
 import CompletionFeedbackCard from './CompletionFeedbackCard';
 import DropdownMenu from './DropdownMenu';
 import MoreOptionsIcon from './icons/MoreOptionsIcon';
+import CheckCircleIcon from './icons/CheckCircleIcon';
 
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+// --- Contained Confetti Component for Completed Chunks ---
+const ContainedConfettiPiece: React.FC<{ initialX: number; delay: number; duration: number; color: string }> = ({
+  initialX,
+  delay,
+  duration,
+  color,
+}) => {
+  const styles: React.CSSProperties = {
+    position: 'absolute',
+    width: '6px',
+    height: '12px',
+    background: color,
+    top: '-15px', // Start above the container
+    left: `${initialX}%`,
+    opacity: 0,
+    animation: `contained-fall ${duration}s linear ${delay}s infinite`,
+  };
+
+  return <div style={styles} />;
+};
+
+const ContainedConfetti: React.FC = () => {
+  const numPieces = 40; // Fewer pieces for a smaller area
+  const colors = ['var(--color-primary-accent)', 'var(--color-secondary-accent)', 'var(--color-warning)', 'hsl(var(--color-primary-accent-h), 60%, 85%)'];
+
+  return (
+    <div className="absolute inset-0 z-0 pointer-events-none">
+      {Array.from({ length: numPieces }).map((_, index) => (
+        <ContainedConfettiPiece
+          key={index}
+          initialX={Math.random() * 100}
+          delay={Math.random() * 4}
+          duration={2 + Math.random() * 3}
+          color={colors[Math.floor(Math.random() * colors.length)]}
+        />
+      ))}
+    </div>
+  );
+};
+
 
 const generateInitialPlan = async (goal: string, history: Record<EnergyTag, CompletionRecord[]>): Promise<MomentumMapData> => {
     const schema = {
@@ -832,7 +874,7 @@ const MomentumMap: React.FC<MomentumMapProps> = ({ activeMap, setActiveMap, setS
     };
 
     const renderFinishLine = () => (
-         <div className="bg-[var(--color-surface)] p-6 rounded-2xl shadow-lg border border-[var(--color-border)] mb-8 relative">
+         <div className="bg-[var(--color-surface)] p-6 rounded-2xl elevation-2 mb-8 relative">
             <div className="flex items-start space-x-5">
                 <FinishLineIcon className="h-10 w-10 text-[var(--color-primary-accent)] mt-1 flex-shrink-0" />
                 <div className="flex-1">
@@ -1061,58 +1103,104 @@ const MomentumMap: React.FC<MomentumMapProps> = ({ activeMap, setActiveMap, setS
 
     const renderListView = () => (
         <div className="space-y-4">
-            {chunksWithPersonalizedEstimates.map(chunk => (
-                <div key={chunk.id} data-chunkid={chunk.id} className={`bg-[var(--color-surface)] p-4 rounded-xl shadow-sm border border-[var(--color-border)] transition-all duration-300 ${chunk.isComplete ? 'opacity-60 bg-[var(--color-surface-sunken)]' : ''}`}>
-                    <div className="flex items-center">
-                        <div className="flex-1 cursor-pointer" onClick={() => handleToggleChunk(chunk.id)}>
-                            {renderChunkHeader(chunk, chunk.id === activeChunk?.id, elapsedSeconds)}
+            {chunksWithPersonalizedEstimates.map(chunk => {
+                if (chunk.isComplete) {
+                    return (
+                        <div key={chunk.id} className="bg-[var(--color-surface-sunken)] p-4 rounded-xl elevation-2 opacity-80 relative overflow-hidden">
+                            <ContainedConfetti />
+                            <div className="relative z-10 flex items-center justify-between">
+                                <h3 className="text-lg font-bold text-[var(--color-text-secondary)] line-through">{chunk.title}</h3>
+                                <div className="flex items-center gap-2 text-sm font-semibold text-green-700 bg-green-100 px-2.5 py-1 rounded-full">
+                                    <CheckCircleIcon className="h-4 w-4" />
+                                    <span>Complete</span>
+                                </div>
+                            </div>
                         </div>
-                         <div className="flex items-center space-x-1 pl-2">
-                             {!chunk.isComplete && (
-                                <button
-                                    onClick={() => setChunkToSplit(chunk)}
-                                    title="Split into smaller chunks"
-                                    className="p-1.5 rounded-full text-[var(--color-text-subtle)] hover:bg-[var(--color-surface-sunken)] hover:text-[var(--color-text-primary)]"
-                                >
-                                    <SplitIcon className="h-5 w-5" />
-                                </button>
+                    );
+                }
+
+                const gradientClass = chunk.energyTag === EnergyTag.Creative || chunk.energyTag === EnergyTag.Social ? 'card-gradient-overlay-clay' : 'card-gradient-overlay-jade';
+                
+                return (
+                    <div key={chunk.id} data-chunkid={chunk.id} className={`relative bg-[var(--color-surface)] rounded-xl elevation-2 transition-all duration-300 card-interactive-lift ${gradientClass}`}>
+                        <div className="relative z-10">
+                            <div className="p-4">
+                                <div className="flex items-center">
+                                    <div className="flex-1 cursor-pointer" onClick={() => handleToggleChunk(chunk.id)}>
+                                        {renderChunkHeader(chunk, chunk.id === activeChunk?.id, elapsedSeconds)}
+                                    </div>
+                                    <div className="flex items-center space-x-1 pl-2">
+                                        {!chunk.isComplete && (
+                                            <button
+                                                onClick={() => setChunkToSplit(chunk)}
+                                                title="Split into smaller chunks"
+                                                className="p-1.5 rounded-full text-[var(--color-text-subtle)] hover:bg-[var(--color-surface-sunken)] hover:text-[var(--color-text-primary)]"
+                                            >
+                                                <SplitIcon className="h-5 w-5" />
+                                            </button>
+                                        )}
+                                        <button onClick={() => handleToggleChunk(chunk.id)} className="p-1 rounded-full text-[var(--color-text-subtle)] hover:bg-[var(--color-surface-sunken)]">
+                                            {openChunks.includes(chunk.id) ? <ChevronDownIcon className="h-6 w-6"/> : <ChevronRightIcon className="h-6 w-6"/>}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            {openChunks.includes(chunk.id) && (
+                                <div className="px-4 pb-4">
+                                    <div className="mt-4 pt-4 inset-divider space-y-1">
+                                        {chunk.subSteps.map(ss => renderSubStep(chunk, ss))}
+                                    </div>
+                                </div>
                             )}
-                            <button onClick={() => handleToggleChunk(chunk.id)} className="p-1 rounded-full text-[var(--color-text-subtle)] hover:bg-[var(--color-surface-sunken)]">
-                                {openChunks.includes(chunk.id) ? <ChevronDownIcon className="h-6 w-6"/> : <ChevronRightIcon className="h-6 w-6"/>}
-                            </button>
                         </div>
                     </div>
-                    {openChunks.includes(chunk.id) && (
-                        <div className="mt-4 pt-4 border-t border-[var(--color-border)]/80 space-y-1">
-                           {chunk.subSteps.map(ss => renderSubStep(chunk, ss))}
-                        </div>
-                    )}
-                </div>
-            ))}
+                );
+            })}
         </div>
     );
 
     const renderCardView = () => (
          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {chunksWithPersonalizedEstimates.map(chunk => (
-                <div key={chunk.id} data-chunkid={chunk.id} className={`bg-[var(--color-surface)] p-6 rounded-2xl shadow-sm border border-[var(--color-border)] flex flex-col transition-all duration-300 ${chunk.isComplete ? 'opacity-60 bg-[var(--color-surface-sunken)]' : 'hover:shadow-lg hover:border-[var(--color-primary-accent)] hover:-translate-y-1'}`}>
-                    <div className="flex items-start">
-                         <div className="flex-1">{renderChunkHeader(chunk, chunk.id === activeChunk?.id, elapsedSeconds)}</div>
-                        {!chunk.isComplete && (
-                             <button
-                                onClick={() => setChunkToSplit(chunk)}
-                                title="Split into smaller chunks"
-                                className="p-1.5 rounded-full text-[var(--color-text-subtle)] hover:bg-[var(--color-surface-sunken)] hover:text-[var(--color-text-primary)] -mt-1 -mr-1"
-                            >
-                                <SplitIcon className="h-5 w-5" />
-                            </button>
-                        )}
+            {chunksWithPersonalizedEstimates.map(chunk => {
+                if (chunk.isComplete) {
+                     return (
+                        <div key={chunk.id} className="bg-[var(--color-surface-sunken)] p-6 rounded-2xl elevation-2 opacity-80 relative overflow-hidden flex items-center justify-center">
+                            <ContainedConfetti />
+                            <div className="relative z-10 text-center">
+                                <div className="flex items-center justify-center gap-2 text-lg font-semibold text-green-700 bg-green-100 px-3 py-1.5 rounded-full">
+                                    <CheckCircleIcon className="h-5 w-5" />
+                                    <span>Complete</span>
+                                </div>
+                                <h3 className="mt-3 text-xl font-bold text-[var(--color-text-secondary)] line-through">{chunk.title}</h3>
+                            </div>
+                        </div>
+                    );
+                }
+
+                const gradientClass = chunk.energyTag === EnergyTag.Creative || chunk.energyTag === EnergyTag.Social ? 'card-gradient-overlay-clay' : 'card-gradient-overlay-jade';
+
+                return (
+                    <div key={chunk.id} data-chunkid={chunk.id} className={`relative bg-[var(--color-surface)] rounded-2xl elevation-2 flex flex-col transition-all duration-300 card-interactive-lift ${gradientClass}`}>
+                        <div className="relative z-10 p-6 flex flex-col flex-1">
+                            <div className="flex items-start">
+                                <div className="flex-1">{renderChunkHeader(chunk, chunk.id === activeChunk?.id, elapsedSeconds)}</div>
+                                {!chunk.isComplete && (
+                                    <button
+                                        onClick={() => setChunkToSplit(chunk)}
+                                        title="Split into smaller chunks"
+                                        className="p-1.5 rounded-full text-[var(--color-text-subtle)] hover:bg-[var(--color-surface-sunken)] hover:text-[var(--color-text-primary)] -mt-1 -mr-1"
+                                    >
+                                        <SplitIcon className="h-5 w-5" />
+                                    </button>
+                                )}
+                            </div>
+                            <div className="mt-4 pt-4 inset-divider space-y-1 flex-1">
+                                {chunk.subSteps.map(ss => renderSubStep(chunk, ss))}
+                            </div>
+                        </div>
                     </div>
-                    <div className="mt-4 pt-4 border-t border-[var(--color-border)]/80 space-y-1 flex-1">
-                        {chunk.subSteps.map(ss => renderSubStep(chunk, ss))}
-                    </div>
-                </div>
-            ))}
+                );
+            })}
         </div>
     );
 
@@ -1148,7 +1236,7 @@ const MomentumMap: React.FC<MomentumMapProps> = ({ activeMap, setActiveMap, setS
         return (
             <div className="relative overflow-hidden">
                 <Confetti />
-                <div className="text-center bg-[var(--color-surface)] p-10 rounded-2xl shadow-2xl border border-[var(--color-border)]/80 z-10 relative">
+                <div className="text-center bg-[var(--color-surface)] p-10 rounded-2xl elevation-3 z-10 relative">
                     <TrophyIcon className="h-20 w-20 text-yellow-500 mx-auto mb-4" />
                     <h1 className="text-5xl font-extrabold text-[var(--color-primary-accent)] mb-2 tracking-tight">Momentum Achieved!</h1>
                     <p className="text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto mb-8">
@@ -1211,7 +1299,7 @@ const MomentumMap: React.FC<MomentumMapProps> = ({ activeMap, setActiveMap, setS
         return (
             <main className="container mx-auto p-8">
                 {error ? renderError() : (
-                    <div className="text-center py-20 bg-[var(--color-surface)] rounded-2xl shadow-lg border max-w-3xl mx-auto">
+                    <div className="text-center py-20 bg-[var(--color-surface)] rounded-2xl elevation-2 max-w-3xl mx-auto">
                         <FinishLineIcon className="h-12 w-12 text-[var(--color-primary-accent)] mx-auto mb-4" />
                         <h2 className="text-3xl font-bold text-[var(--color-text-primary)]">What's Your Finish Line?</h2>
                         <p className="text-[var(--color-text-secondary)] mt-2 mb-6 max-w-lg mx-auto">Describe your high-level goal, and the AI will generate a step-by-step roadmap to get you there.</p>

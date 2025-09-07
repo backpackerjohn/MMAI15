@@ -109,7 +109,7 @@ const SplitChunkModal: React.FC<SplitChunkModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 transition-opacity duration-300" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="split-chunk-title">
-      <div className="bg-[var(--color-surface)] rounded-2xl shadow-2xl p-8 w-full max-w-3xl transform transition-all duration-300 scale-100 flex flex-col h-[90vh]" onClick={e => e.stopPropagation()}>
+      <div className="bg-[var(--color-surface)] rounded-2xl elevation-3 p-8 w-full max-w-3xl transform transition-all duration-300 scale-100 flex flex-col h-[90vh]" onClick={e => e.stopPropagation()}>
         <form onSubmit={(e) => { e.preventDefault(); handleSave(); }} className="flex flex-col h-full">
             <h2 id="split-chunk-title" className="text-2xl font-bold text-[var(--color-text-primary)] mb-2">Split Chunk</h2>
             <p className="text-[var(--color-text-secondary)] mb-4">

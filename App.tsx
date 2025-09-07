@@ -290,7 +290,7 @@ const Dashboard: React.FC = () => {
         <p className="text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto">
           Your journey to peak productivity starts here. This dashboard will help you visualize progress and organize your ideas effortlessly.
         </p>
-        <div className="mt-12 p-10 bg-[var(--color-surface)] rounded-2xl shadow-lg border border-[var(--color-border)]">
+        <div className="mt-12 p-10 bg-[var(--color-surface)] rounded-2xl elevation-2">
            <p className="text-[var(--color-text-secondary)] text-lg">Application content will be built here in subsequent steps.</p>
         </div>
       </div>

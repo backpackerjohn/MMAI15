@@ -54,7 +54,7 @@ const ThemeSettingsModal: React.FC<ThemeSettingsModalProps> = ({ isOpen, onClose
             aria-labelledby="theme-settings-title"
         >
             <div
-                className="bg-[var(--color-surface)] rounded-2xl shadow-2xl w-full max-w-lg transform transition-all duration-300 scale-100 flex flex-col h-auto max-h-[90vh]"
+                className="bg-[var(--color-surface)] rounded-2xl elevation-3 w-full max-w-lg transform transition-all duration-300 scale-100 flex flex-col h-auto max-h-[90vh]"
                 onClick={e => e.stopPropagation()}
             >
                 <header className="p-6 border-b border-[var(--color-border)] flex justify-between items-center">

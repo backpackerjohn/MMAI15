@@ -150,7 +150,7 @@ const TimeLearningSettingsPage: React.FC<Props> = ({ settings, setSettings, comp
             <p className="text-[var(--color-text-secondary)] mb-8">Manage how Momentum Map learns from your work patterns to personalize your time estimates.</p>
             
             <div className="space-y-6">
-                <div className="bg-[var(--color-surface)] p-6 rounded-2xl shadow-sm border">
+                <div className="bg-[var(--color-surface)] p-6 rounded-2xl elevation-2">
                     <h2 className="text-2xl font-bold text-[var(--color-text-primary)] mb-4">General</h2>
                     <div className="flex justify-between items-center">
                         <label htmlFor="enable-learning" className="font-semibold text-[var(--color-text-secondary)]">Enable Personalized Estimates</label>
@@ -158,7 +158,7 @@ const TimeLearningSettingsPage: React.FC<Props> = ({ settings, setSettings, comp
                     </div>
                 </div>
 
-                <div className={`bg-[var(--color-surface)] p-6 rounded-2xl shadow-sm border transition-opacity ${!settings.isEnabled ? 'opacity-50' : ''}`}>
+                <div className={`bg-[var(--color-surface)] p-6 rounded-2xl elevation-2 transition-opacity ${!settings.isEnabled ? 'opacity-50' : ''}`}>
                     <h2 className="text-2xl font-bold text-[var(--color-text-primary)] mb-4">Configuration</h2>
                     <div className="space-y-4">
                         <div>
@@ -169,7 +169,7 @@ const TimeLearningSettingsPage: React.FC<Props> = ({ settings, setSettings, comp
                     </div>
                 </div>
 
-                <div className="bg-[var(--color-surface)] p-6 rounded-2xl shadow-sm border">
+                <div className="bg-[var(--color-surface)] p-6 rounded-2xl elevation-2">
                     <h2 className="text-2xl font-bold text-[var(--color-text-primary)] mb-4">Performance Dashboard</h2>
                     {stats ? (
                         <div className="text-center">
@@ -202,7 +202,7 @@ const TimeLearningSettingsPage: React.FC<Props> = ({ settings, setSettings, comp
                 </div>
                 
                 {timeOfDayInsights.length > 0 && (
-                     <div className="bg-[var(--color-surface)] p-6 rounded-2xl shadow-sm border">
+                     <div className="bg-[var(--color-surface)] p-6 rounded-2xl elevation-2">
                         <h2 className="text-2xl font-bold text-[var(--color-text-primary)] mb-4">Your Productivity Peaks</h2>
                         <p className="text-sm text-[var(--color-text-secondary)] mb-4">Based on your history, here are some patterns we've noticed. Consider scheduling tasks during your peak times!</p>
                         <div className="space-y-3">
@@ -217,7 +217,7 @@ const TimeLearningSettingsPage: React.FC<Props> = ({ settings, setSettings, comp
                 )}
 
                 {weeklyInsights.length > 0 && (
-                     <div className="bg-[var(--color-surface)] p-6 rounded-2xl shadow-sm border">
+                     <div className="bg-[var(--color-surface)] p-6 rounded-2xl elevation-2">
                         <h2 className="text-2xl font-bold text-[var(--color-text-primary)] mb-4">Your Weekly Rhythm</h2>
                         <p className="text-sm text-[var(--color-text-secondary)] mb-4">Here's how your performance varies throughout the week.</p>
                         <div className="space-y-3">
@@ -231,7 +231,7 @@ const TimeLearningSettingsPage: React.FC<Props> = ({ settings, setSettings, comp
                     </div>
                 )}
 
-                <div className="bg-[var(--color-surface)] p-6 rounded-2xl shadow-sm border">
+                <div className="bg-[var(--color-surface)] p-6 rounded-2xl elevation-2">
                     <h2 className="text-2xl font-bold text-[var(--color-text-primary)] mb-4">Data Management</h2>
                     <div className="flex justify-between items-center gap-4">
                         <button onClick={handleExport} className="flex-1 px-4 py-2 font-semibold text-[var(--color-text-secondary)] bg-[var(--color-surface-sunken)] hover:bg-[var(--color-border)] rounded-lg">Export My Data</button>

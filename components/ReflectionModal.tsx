@@ -40,7 +40,7 @@ const ReflectionModal: React.FC<ReflectionModalProps> = ({ isOpen, onClose, onSa
       aria-labelledby="reflection-modal-title"
     >
       <div 
-        className="bg-[var(--color-surface)] rounded-2xl shadow-2xl p-8 w-full max-w-lg transform transition-all duration-300 scale-100"
+        className="bg-[var(--color-surface)] rounded-2xl elevation-3 p-8 w-full max-w-lg transform transition-all duration-300 scale-100"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="reflection-modal-title" className="text-2xl font-bold text-[var(--color-text-primary)] mb-2">

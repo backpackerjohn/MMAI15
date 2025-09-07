@@ -43,7 +43,7 @@ const ThemeSuggestionToast: React.FC<ThemeSuggestionToastProps> = ({ suggestion,
 
     return (
         <div
-            className="group fixed bottom-8 left-1/2 -translate-x-1/2 z-[70] rounded-xl shadow-2xl p-4 w-full max-w-md border flex items-center gap-4 animate-fade-in transition-transform duration-300 hover:scale-105"
+            className="group fixed bottom-8 left-1/2 -translate-x-1/2 z-[70] rounded-xl elevation-3 p-4 w-full max-w-md flex items-center gap-4 animate-fade-in transition-transform duration-300 hover:scale-105"
             style={toastStyle}
             onMouseEnter={() => onPreviewStart(suggestion)}
             onMouseLeave={onPreviewEnd}

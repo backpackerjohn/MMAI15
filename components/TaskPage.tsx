@@ -77,108 +77,100 @@ const TaskPage: React.FC<TaskPageProps> = ({ savedTasks, setSavedTasks, onResume
     const progressPercentage = task.progress.totalSubSteps > 0 ? (task.progress.completedSubSteps / task.progress.totalSubSteps) * 100 : 0;
     
     return (
-      <div key={task.id} className="bg-[var(--color-surface)] p-6 rounded-xl shadow-sm border border-[var(--color-border)] flex flex-col transition-all duration-300 hover:shadow-md hover:border-[var(--color-border-hover)]">
-        {isEditing ? (
-            <div className="flex-1">
-                <input
-                    type="text"
-                    value={editingTask.nickname}
-                    onChange={(e) => setEditingTask({ ...editingTask, nickname: e.target.value })}
-                    placeholder="Add a nickname..."
-                    className="w-full text-xl font-bold text-[var(--color-text-primary)] border-b-2 border-dashed border-[var(--color-border-hover)] focus:border-[var(--color-primary-accent)] focus:outline-none pb-1 bg-transparent"
-                />
-                <textarea
-                    value={editingTask.note}
-                    onChange={(e) => setEditingTask({ ...editingTask, note: e.target.value })}
-                    className="w-full mt-3 p-2 border border-[var(--color-border-hover)] rounded-md text-sm focus:ring-1 focus:ring-[var(--color-primary-accent)] focus:border-[var(--color-primary-accent)] bg-transparent"
-                    autoFocus
-                    rows={3}
-                />
-            </div>
-        ) : (
-            <div className="flex-1 cursor-pointer" onClick={() => handleResume(task)}>
-                <h3 className="text-xl font-bold text-[var(--color-text-primary)] truncate" title={task.mapData.finishLine.statement}>
-                    {task.nickname || task.mapData.finishLine.statement}
-                </h3>
-                {task.nickname && <p className="text-sm text-[var(--color-text-subtle)] truncate -mt-1">{task.mapData.finishLine.statement}</p>}
+      <div key={task.id} className="relative bg-[var(--color-surface)] rounded-xl elevation-2 flex flex-col transition-all duration-300 card-interactive-lift card-gradient-overlay-clay">
+        <div className="relative z-10 p-6 flex flex-col flex-1">
+          {isEditing ? (
+              <div className="flex-1">
+                  <input
+                      type="text"
+                      value={editingTask.nickname}
+                      onChange={(e) => setEditingTask({ ...editingTask, nickname: e.target.value })}
+                      placeholder="Add a nickname..."
+                      className="w-full text-xl font-bold text-[var(--color-text-primary)] border-b-2 border-dashed border-[var(--color-border-hover)] focus:border-[var(--color-primary-accent)] focus:outline-none pb-1 bg-transparent"
+                  />
+                  <textarea
+                      value={editingTask.note}
+                      onChange={(e) => setEditingTask({ ...editingTask, note: e.target.value })}
+                      className="w-full mt-2 text-sm text-[var(--color-text-secondary)] bg-transparent border border-dashed border-[var(--color-border)] rounded-md p-2 h-24 resize-none focus:outline-none focus:ring-1 focus:ring-[var(--color-primary-accent)]"
+                  />
+              </div>
+          ) : (
+              <div className="flex-1">
+                  <h3 className="text-xl font-bold text-[var(--color-text-primary)]">
+                      {task.nickname || task.mapData.finishLine.statement}
+                  </h3>
+                  <p className="mt-2 text-sm text-[var(--color-text-secondary)]">{task.note}</p>
+              </div>
+          )}
+          
+          <div className="mt-4 pt-4 inset-divider">
+              {nextBestMove ? (
+                  <div>
+                      <p className="text-xs font-semibold text-[var(--color-text-subtle)] uppercase tracking-wider mb-1">Next Best Move</p>
+                      <p className="text-sm font-medium text-[var(--color-text-primary)]">{nextBestMove.description}</p>
+                  </div>
+              ) : (
+                  <p className="text-sm font-medium text-green-600">This task is complete!</p>
+              )}
+          </div>
 
-                {task.note && task.note !== 'No note added.' ? (
-                    <p className="mt-2 text-[var(--color-text-secondary)] italic">"{task.note}"</p>
-                ) : (
-                    <p className="mt-2 text-[var(--color-text-subtle)] italic">No note added.</p>
-                )}
-                
-                <div className="mt-4">
-                    <div className="w-full bg-[var(--color-surface-sunken)] rounded-full h-2">
-                        <div className="bg-[var(--color-success)] h-2 rounded-full" style={{ width: `${progressPercentage}%` }}></div>
-                    </div>
-                    <p className="text-xs text-[var(--color-text-subtle)] mt-1.5 font-medium">
-                        <strong>{task.progress.completedChunks}</strong> of <strong>{task.progress.totalChunks}</strong> chunks &middot; <strong>{task.progress.completedSubSteps}</strong> of <strong>{task.progress.totalSubSteps}</strong> steps
-                    </p>
-                </div>
-                
-                <div className="mt-3">
-                    <p className="text-sm text-[var(--color-text-primary)]">
-                        <span className="font-semibold">Next:</span> {nextBestMove ? nextBestMove.description : 'All steps complete!'}
-                    </p>
-                </div>
+          <div className="mt-4">
+              <div className="flex justify-between items-center mb-1">
+                  <span className="text-xs font-semibold text-[var(--color-text-subtle)]">Progress</span>
+                  <span className="text-xs font-semibold text-[var(--color-text-primary)]">{task.progress.completedSubSteps} / {task.progress.totalSubSteps}</span>
+              </div>
+              <div className="w-full bg-stone-200 rounded-full h-2">
+                  <div className="bg-[var(--color-success)] h-2 rounded-full" style={{ width: `${progressPercentage}%` }}></div>
+              </div>
+          </div>
+        </div>
 
-                <p className="text-xs text-[var(--color-text-subtle)] mt-4">
-                    Saved: {new Date(task.savedAt).toLocaleString()}
-                </p>
-            </div>
-        )}
-        
-        <div className="mt-4 pt-4 border-t border-[var(--color-border)]/80 flex items-center gap-2">
-            {isEditing ? (
-                <>
-                    <button onClick={() => setEditingTask(null)} className="px-4 py-2 text-sm font-bold text-[var(--color-text-secondary)] bg-[var(--color-surface-sunken)] hover:bg-[var(--color-border)] rounded-lg transition-all">Cancel</button>
-                    <button onClick={handleSaveEdit} className="flex-1 px-4 py-2 text-sm font-semibold text-[var(--color-primary-accent-text)] bg-[var(--color-primary-accent)] hover:bg-[var(--color-primary-accent-hover)] rounded-lg transition-all">Save Changes</button>
-                </>
-            ) : (
-                <>
-                    <button onClick={(e) => { e.stopPropagation(); setEditingTask({ id: task.id, note: task.note, nickname: task.nickname || '' }); }} className="px-4 py-2 text-sm font-bold text-[var(--color-text-secondary)] bg-[var(--color-surface-sunken)] hover:bg-[var(--color-border)] rounded-lg transition-all">Edit</button>
-                    <button onClick={(e) => { e.stopPropagation(); handleResume(task); }} className="flex-1 px-4 py-2 text-sm font-semibold text-[var(--color-primary-accent-text)] bg-[var(--color-primary-accent)] hover:bg-[var(--color-primary-accent-hover)] rounded-lg transition-all shadow-sm">Resume</button>
-                    <button onClick={(e) => { e.stopPropagation(); handleDelete(task.id); }} className="p-2 text-[var(--color-text-subtle)] hover:text-[var(--color-danger)] hover:bg-red-100 rounded-full transition-colors" title="Delete Task">
-                        <TrashIcon className="h-5 w-5" />
-                    </button>
-                </>
-            )}
+        <div className="bg-[var(--color-surface-sunken)]/60 px-6 py-3 rounded-b-xl flex items-center justify-between">
+          <div className="flex items-center gap-4">
+              {isEditing ? (
+                  <>
+                      <button onClick={handleSaveEdit} className="text-sm font-bold text-[var(--color-primary-accent)]">Save</button>
+                      <button onClick={() => setEditingTask(null)} className="text-sm font-semibold text-[var(--color-text-secondary)]">Cancel</button>
+                  </>
+              ) : (
+                 <>
+                  <button onClick={() => handleResume(task)} className="text-sm font-bold text-[var(--color-primary-accent)]">Resume</button>
+                  <button onClick={() => setEditingTask({ id: task.id, note: task.note, nickname: task.nickname || '' })} className="text-sm font-semibold text-[var(--color-text-secondary)]">Edit</button>
+                 </>
+              )}
+          </div>
+          <button onClick={() => handleDelete(task.id)} className="text-stone-400 hover:text-red-500" title="Delete Task">
+              <TrashIcon className="h-5 w-5" />
+          </button>
         </div>
       </div>
     );
   };
-
+  
   return (
     <main className="container mx-auto p-8">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
         <div>
-          <h1 className="text-4xl font-bold text-[var(--color-text-primary)]">Saved Momentum Maps</h1>
-          <p className="text-[var(--color-text-secondary)] mt-2 max-w-2xl">Resume a saved map, or review your progress.</p>
+            <h1 className="text-4xl font-bold text-[var(--color-text-primary)]">Saved Tasks</h1>
+            <p className="text-[var(--color-text-secondary)] mt-2">Resume a past Momentum Map or review your completed projects.</p>
         </div>
-        <div className="flex items-center space-x-2">
-          <label htmlFor="sort-tasks" className="text-sm font-semibold text-[var(--color-text-secondary)]">Sort by:</label>
-          <select
-            id="sort-tasks"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as SortOption)}
-            className="p-2 border border-[var(--color-border)] rounded-lg text-sm font-semibold focus:ring-2 focus:ring-[var(--color-primary-accent)] transition-shadow bg-transparent"
-          >
-            <option>Most Recent</option>
-            <option>Finish Line</option>
-            <option>Unfinished Only</option>
-          </select>
+        <div className="flex items-center space-x-2 p-1 bg-[var(--color-surface-sunken)] rounded-lg">
+          {(['Most Recent', 'Finish Line', 'Unfinished Only'] as SortOption[]).map(option => (
+            <button key={option} onClick={() => setSortBy(option)} className={`px-3 py-1.5 text-sm font-semibold rounded-md transition-colors ${sortBy === option ? 'bg-[var(--color-surface)] shadow-sm text-[var(--color-primary-accent)]' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-border)]'}`}>
+              {option}
+            </button>
+          ))}
         </div>
       </div>
       
       {sortedTasks.length > 0 ? (
-        <div className="max-w-4xl mx-auto space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedTasks.map(renderTaskCard)}
         </div>
       ) : (
-        <div className="text-center py-20 bg-[var(--color-surface)] rounded-2xl shadow-sm border border-[var(--color-border)]">
-          <h2 className="text-2xl font-semibold text-[var(--color-text-primary)]">No Saved Maps Yet</h2>
-          <p className="text-[var(--color-text-secondary)] mt-2">Go to your Momentum Map and use the save button in the bottom-left to save a map for later.</p>
+        <div className="text-center py-20 bg-[var(--color-surface)] rounded-2xl elevation-2">
+            <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">No Saved Tasks Yet</h2>
+            <p className="text-[var(--color-text-secondary)] mt-2">When you save a Momentum Map, you'll find it here.</p>
         </div>
       )}
     </main>

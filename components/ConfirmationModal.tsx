@@ -45,7 +45,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       aria-labelledby="confirmation-modal-title"
     >
       <div
-        className="bg-[var(--color-surface)] rounded-2xl shadow-2xl p-8 w-full max-w-md transform transition-all duration-300 scale-100"
+        className="bg-[var(--color-surface)] rounded-2xl elevation-3 p-8 w-full max-w-md transform transition-all duration-300 scale-100"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start gap-4">

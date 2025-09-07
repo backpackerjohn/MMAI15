@@ -55,7 +55,7 @@ const UnblockerModal: React.FC<UnblockerModalProps> = ({
       aria-labelledby="unblocker-modal-title"
     >
       <div 
-        className="bg-[var(--color-surface)] rounded-2xl shadow-2xl p-8 w-full max-w-lg transform transition-all duration-300 scale-100"
+        className="bg-[var(--color-surface)] rounded-2xl elevation-3 p-8 w-full max-w-lg transform transition-all duration-300 scale-100"
         onClick={(e) => e.stopPropagation()}
       >
         <form onSubmit={(e) => { e.preventDefault(); handleAccept(); }}>
